@@ -1,0 +1,112 @@
+:root{
+  --navy:#1e2a4a; --navy2:#26355c; --cream:#f7f3ea; --khaki:#c9b99a;
+  --ink:#2b2b33; --gold:#c9a86a; --soft:#e8e0d0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:linear-gradient(135deg,#141b30 0%,#1c2542 55%,#242f52 100%);
+  color:var(--cream); min-height:100vh; overflow-x:hidden;
+}
+.app{display:grid;grid-template-columns:minmax(380px,44%) 1fr;gap:24px;
+  max-width:1280px;margin:0 auto;padding:28px 24px;min-height:100vh}
+
+/* ============ 舞台 ============ */
+.stage-wrap{display:flex;flex-direction:column;gap:18px}
+.stage{
+  position:relative;border-radius:24px;overflow:hidden;
+  background:radial-gradient(circle at 50% 30%,#31406e,#141b30 75%);
+  aspect-ratio:768/992; max-height:62vh; margin:0 auto; width:100%;
+  box-shadow:0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(201,168,106,.25);
+}
+.stage video{width:100%;height:100%;object-fit:cover;display:block;
+  animation:breathe 6s ease-in-out infinite}
+.stage.speaking video{animation:speakMove 2.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@keyframes speakMove{0%,100%{transform:scale(1.02) translateY(0)}30%{transform:scale(1.035) translateY(-4px)}65%{transform:scale(1.028) translateY(3px)}}
+.halo{position:absolute;inset:-2px;border-radius:24px;pointer-events:none;
+  box-shadow:inset 0 0 80px rgba(20,27,48,.55);z-index:3}
+.stage.speaking .halo{box-shadow:inset 0 0 90px rgba(201,168,106,.28);
+  animation:halo 1.6s ease-in-out infinite}
+@keyframes halo{0%,100%{opacity:.5}50%{opacity:1}}
+
+.speak-wave{position:absolute;left:18px;bottom:64px;display:flex;gap:4px;align-items:flex-end;height:26px;z-index:4;opacity:0;transition:opacity .3s}
+.stage.speaking .speak-wave{opacity:1}
+.speak-wave span{width:4px;background:var(--gold);border-radius:2px;animation:wv 1s ease-in-out infinite}
+.speak-wave span:nth-child(1){animation-delay:0s;height:8px}
+.speak-wave span:nth-child(2){animation-delay:.15s;height:16px}
+.speak-wave span:nth-child(3){animation-delay:.3s;height:24px}
+.speak-wave span:nth-child(4){animation-delay:.45s;height:14px}
+.speak-wave span:nth-child(5){animation-delay:.6s;height:20px}
+@keyframes wv{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+
+.subtitle{position:absolute;left:0;right:0;bottom:0;z-index:4;
+  padding:44px 18px 14px;
+  background:linear-gradient(transparent,rgba(10,14,28,.88));
+  font-size:14.5px;line-height:1.65;color:#f3ecd9;text-align:center;
+  min-height:0;max-height:40%;overflow-y:auto}
+.subtitle .zh{display:block;margin-top:6px;font-size:12.5px;color:var(--gold)}
+
+/* ============ 人设卡 ============ */
+.profile-card{background:rgba(247,243,234,.06);border:1px solid rgba(201,168,106,.28);
+  border-radius:20px;padding:18px 20px;backdrop-filter:blur(6px)}
+.profile-head{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.avatar-mini{width:54px;height:54px;border-radius:50%;overflow:hidden;
+  border:2px solid var(--gold);flex-shrink:0}
+.avatar-mini img{width:100%;height:100%;object-fit:cover}
+.profile-card h2{font-size:19px;letter-spacing:.5px}
+.profile-card h2 .age{font-size:12px;color:var(--gold);border:1px solid var(--gold);
+  border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:2px}
+.tagline{font-size:12.5px;color:#cfc6ad;margin-top:3px;font-style:italic}
+.traits{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.trait{font-size:12.5px;color:#e6dfcc;background:rgba(255,255,255,.05);
+  border-radius:10px;padding:8px 10px;line-height:1.5}
+.trait b{display:block;color:var(--gold);font-size:11.5px;margin-bottom:2px;font-weight:600}
+.traits .trait:last-child{grid-column:1/-1}
+
+/* ============ 聊天 ============ */
+.chat-wrap{display:flex;flex-direction:column;gap:14px;min-height:0}
+.chat-head h1{font-size:22px;letter-spacing:.5px}
+.chat-head p{font-size:13px;color:#b9b19a;margin-top:5px}
+.chat-box{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;
+  background:rgba(247,243,234,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:18px;min-height:340px}
+.msg{max-width:82%;padding:11px 15px;border-radius:16px;font-size:14px;line-height:1.7;
+  animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.user{align-self:flex-end;background:var(--navy2);border:1px solid #3a4a80;
+  border-bottom-right-radius:4px}
+.msg.lucas{align-self:flex-start;background:rgba(247,243,234,.92);color:var(--ink);
+  border-bottom-left-radius:4px}
+.msg.lucas .zh{display:block;margin-top:6px;font-size:12px;color:#8a7c5c}
+.msg .name{display:block;font-size:11px;color:var(--gold);margin-bottom:3px;font-weight:600;letter-spacing:.5px}
+.msg .play{display:inline-flex;align-items:center;gap:5px;margin-top:8px;cursor:pointer;
+  font-size:11.5px;color:#7a5f2e;background:#efe6cf;border:1px solid #d8c9a4;
+  border-radius:10px;padding:3px 10px;transition:.2s}
+.msg .play:hover{background:#e8dab6}
+.typing{align-self:flex-start;color:#b9b19a;font-size:13px;padding:10px 6px}
+.typing i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);
+  margin-right:3px;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+.quick button{background:rgba(201,168,106,.12);color:#e8dcbf;border:1px solid rgba(201,168,106,.4);
+  border-radius:14px;padding:7px 13px;font-size:12.5px;cursor:pointer;transition:.2s}
+.quick button:hover{background:rgba(201,168,106,.28);transform:translateY(-1px)}
+
+.input-bar{display:flex;gap:10px}
+.input-bar input{flex:1;background:rgba(247,243,234,.08);border:1px solid rgba(255,255,255,.16);
+  border-radius:14px;padding:13px 16px;color:var(--cream);font-size:14px;outline:none;transition:.2s}
+.input-bar input:focus{border-color:var(--gold);background:rgba(247,243,234,.12)}
+.input-bar button{background:linear-gradient(135deg,var(--gold),#a8874a);color:#1c2542;
+  border:none;border-radius:14px;padding:0 22px;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.input-bar button:hover{filter:brightness(1.1)}
+.input-bar button:disabled{opacity:.5;cursor:not-allowed}
+
+.voice-note{font-size:11.5px;color:#9a927c;line-height:1.6}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .stage{max-height:52vh}
+}
