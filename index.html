@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucas · 数字人法语伙伴</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ 左侧：数字人舞台 ============ -->
+  <section class="stage-wrap">
+    <div class="stage" id="stage">
+      <div class="halo"></div>
+      <video id="avatarVideo" src="assets/video/idle.mp4" autoplay loop muted playsinline></video>
+      <div class="speak-wave" id="wave">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-head">
+        <div class="avatar-mini"><img src="assets/portrait_main.jpg" alt=""></div>
+        <div>
+          <h2>Lucas Moreau <span class="age">18 ans</span></h2>
+          <p class="tagline">« 安静，温和，像塞纳河畔的一缕晨光 »</p>
+        </div>
+      </div>
+      <div class="traits">
+        <div class="trait"><b>🇫🇷 家乡</b>巴黎 · 五区 拉丁区</div>
+        <div class="trait"><b>🧍 身形</b>180cm · 适中偏瘦</div>
+        <div class="trait"><b>🎨 穿搭</b>藏蓝针织马甲 · 白衬衫 · 卡其裤</div>
+        <div class="trait"><b>💇 发型</b>浅棕光泽中长发 · 碎盖层次</div>
+        <div class="trait"><b>👀 五官</b>白皙皮肤 · 单眼皮 · 柔和眼神</div>
+        <div class="trait"><b>🤍 性格</b>安静温和 · 喜欢独处也不排斥热闹 · 有自己的想法</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 右侧：对话区 ============ -->
+  <section class="chat-wrap">
+    <header class="chat-head">
+      <h1>Lucas · Ton compagnon français</h1>
+      <p>用法语和我聊天吧 — 我会回答你，并且亲口"说"给你听 🎧</p>
+    </header>
+
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="quick" id="quick">
+      <button data-q="Bonjour ! Comment tu t'appelles ?">👋 Bonjour ! Comment tu t'appelles ?</button>
+      <button data-q="Ça va ? Qu'est-ce que tu aimes ?">☕ Ça va ? Qu'est-ce que tu aimes ?</button>
+      <button data-q="Tu viens d'où ?">🗺️ Tu viens d'où ?</button>
+      <button data-q="Quel âge as-tu ? Tu étudies quoi ?">📚 Quel âge as-tu ?</button>
+      <button data-q="Tu écoutes quoi comme musique ?">🎹 Tu écoutes quoi comme musique ?</button>
+      <button data-q="Je suis un peu fatigué aujourd'hui.">🌧️ Je suis un peu fatigué…</button>
+    </div>
+
+    <form class="input-bar" id="form">
+      <input id="input" type="text" placeholder="Écris ton message…  (也可以输入中文)" autocomplete="off">
+      <button type="submit" id="sendBtn">Envoyer ➤</button>
+    </form>
+    <p class="voice-note">🔊 法语语音由浏览器内置语音引擎朗读（Chrome / Edge 效果最佳）。如未出声，请点一下播放按钮，或在浏览器设置中允许声音。</p>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
