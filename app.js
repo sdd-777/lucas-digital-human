@@ -119,6 +119,9 @@ function typeSubtitle(fr, zh){
   }, 45);
 }
 
+/* 待机循环视频时长（与 assets/video/idle.mp4 一致，用于无缝衔接） */
+const IDLE_DUR = 20.88;
+
 /* 优先播放预生成的「对口型」视频（视频内已含法语男声 Henri）；
    视频缺失/失败则回退预生成 MP3；再失败则回退浏览器语音 */
 function speak(fr, zh, btn, id){
@@ -133,6 +136,10 @@ function speak(fr, zh, btn, id){
       if (done._fired) return; done._fired = true;
       v.onended = null; v.onerror = null; v.oncanplay = null;
       clearTimeout(done._guard);
+      // 无缝衔接：待机与说话视频同源，回到待机时定位到相同时间点，
+      // 这样镜头推进的位置连续，不会出现画面跳变
+      const tEnd = (v.currentTime || 0) % IDLE_DUR;
+      v.onloadedmetadata = ()=>{ try{ v.currentTime = tEnd; }catch(e){} };
       v.src = "assets/video/idle.mp4"; v.loop = true; v.muted = true;
       v.play().catch(()=>{});
       stage.classList.remove("speaking");
