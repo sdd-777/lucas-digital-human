@@ -131,15 +131,17 @@ function speak(fr, zh, btn, id){
     const talk = `assets/video/talk/${id}.mp4`;
     const done = ()=>{
       if (done._fired) return; done._fired = true;
-      v.onended = null; v.onerror = null;
+      v.onended = null; v.onerror = null; v.oncanplay = null;
+      clearTimeout(done._guard);
       v.src = "assets/video/idle.mp4"; v.loop = true; v.muted = true;
       v.play().catch(()=>{});
       stage.classList.remove("speaking");
       if (btn) btn.textContent = "🔊 Réécouter";
     };
     const mp3Fallback = ()=>{
-      // 先让数字人回到 idle 画面，再用预生成 MP3 出声
-      v.onended = null; v.onerror = null;
+      // 先让数字人回到 idle 画面，再用预生成 MP3 出声（MP3 更小、加载更快）
+      v.onended = null; v.onerror = null; v.oncanplay = null;
+      clearTimeout(done._guard);
       v.src = "assets/video/idle.mp4"; v.loop = true; v.muted = true;
       v.play().catch(()=>{});
       const a = new Audio(`assets/audio/${id}.mp3`);
@@ -149,10 +151,14 @@ function speak(fr, zh, btn, id){
       a.play().catch(()=>{ webSpeak(fr); end(); });
     };
     if (btn) btn.textContent = "🔊 …";
-    v.muted = false; v.loop = false; v.src = talk;
+    v.loop = false; v.muted = false;
     v.onended = done;
     v.onerror = mp3Fallback;
-    v.play().catch(mp3Fallback);
+    // 缓冲到可流畅播放再出声，避免中途卡顿；3.5s 未就绪则回退 MP3
+    v.oncanplay = ()=>{ v.oncanplay = null; v.play().catch(mp3Fallback); };
+    v.src = talk;
+    v.load();
+    done._guard = setTimeout(()=>{ if (!done._fired && v.readyState < 3) mp3Fallback(); }, 3500);
     return;
   }
   webSpeak(fr);
