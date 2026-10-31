@@ -119,26 +119,40 @@ function typeSubtitle(fr, zh){
   }, 45);
 }
 
-/* 优先播放预生成的法语男声 MP3；失败则回退 Web Speech */
+/* 优先播放预生成的「对口型」视频（视频内已含法语男声 Henri）；
+   视频缺失/失败则回退预生成 MP3；再失败则回退浏览器语音 */
 function speak(fr, zh, btn, id){
   if (window.speechSynthesis) speechSynthesis.cancel();
   stage.classList.add("speaking");
   typeSubtitle(fr, zh);
 
-  if (id){
-    const a = new Audio(`assets/audio/${id}.mp3`);
-    let finished = false;
-    const stop = ()=>{ if(finished) return; finished = true; stage.classList.remove("speaking"); };
-    const fallback = ()=>{ stop(); webSpeak(fr); };
-    a.addEventListener("ended", stop);
-    a.addEventListener("error", fallback);
-    if (btn){
-      const old = btn.textContent;
-      btn.textContent = "🔊 …";
-      a.addEventListener("ended", ()=>{ btn.textContent = old; });
-      a.addEventListener("error", ()=>{ btn.textContent = old; });
-    }
-    a.play().catch(fallback);
+  const v = document.getElementById("avatarVideo");
+  if (id && v){
+    const talk = `assets/video/talk/${id}.mp4`;
+    const done = ()=>{
+      if (done._fired) return; done._fired = true;
+      v.onended = null; v.onerror = null;
+      v.src = "assets/video/idle.mp4"; v.loop = true; v.muted = true;
+      v.play().catch(()=>{});
+      stage.classList.remove("speaking");
+      if (btn) btn.textContent = "🔊 Réécouter";
+    };
+    const mp3Fallback = ()=>{
+      // 先让数字人回到 idle 画面，再用预生成 MP3 出声
+      v.onended = null; v.onerror = null;
+      v.src = "assets/video/idle.mp4"; v.loop = true; v.muted = true;
+      v.play().catch(()=>{});
+      const a = new Audio(`assets/audio/${id}.mp3`);
+      const end = ()=>{ stage.classList.remove("speaking"); if (btn) btn.textContent = "🔊 Réécouter"; };
+      a.addEventListener("ended", end);
+      a.addEventListener("error", ()=>{ webSpeak(fr); end(); });
+      a.play().catch(()=>{ webSpeak(fr); end(); });
+    };
+    if (btn) btn.textContent = "🔊 …";
+    v.muted = false; v.loop = false; v.src = talk;
+    v.onended = done;
+    v.onerror = mp3Fallback;
+    v.play().catch(mp3Fallback);
     return;
   }
   webSpeak(fr);
@@ -161,7 +175,7 @@ function addLucas(r, withAudio){
       <span class="zh">${escapeHtml(r.zh)}</span>
       ${withAudio ? `<span class="play" title="重听">🔊 Réécouter</span>` : ``}
     </div>`);
-  if (withAudio) node.querySelector(".play").addEventListener("click", e=> speak(r.fr, r.zh, e.target, r.id));
+  if (withAudio) node.querySelector(".play").onclick = ()=> speak(r.fr, r.zh, node.querySelector(".play"), r.id);
   chatBox.appendChild(node); scrollBottom();
   return node;
 }
